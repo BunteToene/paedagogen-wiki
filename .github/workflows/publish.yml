@@ -8,6 +8,9 @@ on:
       dry_run:
         description: "Probelauf ohne echtes Posten (1 = ja)"
         default: "0"
+      check:
+        description: "Nur Verbindung prüfen, nichts posten (1 = ja)"
+        default: "0"
 
 permissions:
   contents: write
@@ -29,6 +32,7 @@ jobs:
       - name: Fällige Posts veröffentlichen
         env:
           DRY_RUN: ${{ inputs.dry_run || '0' }}
+          CHECK: ${{ inputs.check || '0' }}
           META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN }}
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}

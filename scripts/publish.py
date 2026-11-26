@@ -12,7 +12,8 @@ Ablauf
 Zugangsdaten kommen nur aus Umgebungsvariablen (GitHub Secrets), nie aus Dateien:
   META_PAGE_TOKEN, FB_PAGE_ID, IG_USER_ID,
   YT_CLIENT_ID, YT_CLIENT_SECRET, YT_REFRESH_TOKEN
-Optional: GRAPH_VERSION (Standard v27.0), MEDIA_BASE_URL, DRY_RUN=1
+Optional: GRAPH_VERSION (Standard v27.0), MEDIA_BASE_URL, DRY_RUN=1,
+  CHECK=1 (prüft nur die Verbindung, liest Seitenname und IG-Name, postet nichts)
 """
 from __future__ import annotations
 
@@ -244,7 +245,33 @@ def due(post: dict, now: dt.datetime) -> bool:
     return when <= now
 
 
+def check_connection() -> int:
+    """Nur lesen: Stimmen Schlüssel und Nummern? Es wird nichts veröffentlicht."""
+    token, page, ig = env("META_PAGE_TOKEN"), env("FB_PAGE_ID"), env("IG_USER_ID")
+    ok = True
+    for what, url, fields in (
+        ("Facebook-Seite", f"{GRAPH}/{page}", "name"),
+        ("Instagram-Konto", f"{GRAPH}/{ig}", "username"),
+        ("Instagram-Postlimit", f"{GRAPH}/{ig}/content_publishing_limit", "quota_usage,config"),
+    ):
+        try:
+            data = check(requests.get(url, params={"fields": fields, "access_token": token}, timeout=TIMEOUT), what)
+            if what == "Instagram-Postlimit":
+                d = (data.get("data") or [{}])[0]
+                log(f"{what}: {d.get('quota_usage')} von {d.get('config', {}).get('quota_total')} in 24 h genutzt")
+            else:
+                log(f"{what}: OK ({data.get(fields)})")
+        except (PublishError, requests.RequestException) as e:
+            ok = False
+            log(f"{what}: FEHLER {e}")
+    yt = all(os.environ.get(n) for n in ("YT_CLIENT_ID", "YT_CLIENT_SECRET", "YT_REFRESH_TOKEN"))
+    log(f"YouTube-Zugang: {'eingetragen' if yt else 'noch nicht eingetragen'}")
+    return 0 if ok else 1
+
+
 def main() -> int:
+    if os.environ.get("CHECK") == "1":
+        return check_connection()
     now = dt.datetime.now(dt.timezone.utc)
     failures = 0
     for pj in sorted(POSTS.glob("*/post.json")):
