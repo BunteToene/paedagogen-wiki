@@ -199,6 +199,8 @@ def yt_publish(post: dict, post_id: str) -> dict:
     yt = post.get("youtube")
     if post["type"] != "reel" or not yt:
         return {"skipped": "kein Video"}
+    if not all(os.environ.get(n) for n in ("YT_CLIENT_ID", "YT_CLIENT_SECRET", "YT_REFRESH_TOKEN")):
+        return {"skipped": "YouTube-Zugang noch nicht eingetragen"}
     if DRY:
         log("  [Probelauf] YouTube Short")
         return {"dry_run": True}
