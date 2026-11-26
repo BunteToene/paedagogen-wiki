@@ -12,7 +12,7 @@ Ablauf
 Zugangsdaten kommen nur aus Umgebungsvariablen (GitHub Secrets), nie aus Dateien:
   META_PAGE_TOKEN, FB_PAGE_ID, IG_USER_ID,
   YT_CLIENT_ID, YT_CLIENT_SECRET, YT_REFRESH_TOKEN
-Optional: GRAPH_VERSION (Standard v24.0), MEDIA_BASE_URL, DRY_RUN=1
+Optional: GRAPH_VERSION (Standard v27.0), MEDIA_BASE_URL, DRY_RUN=1
 """
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ import requests
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 POSTS = ROOT / "posts"
-GRAPH = f"https://graph.facebook.com/{os.environ.get('GRAPH_VERSION', 'v24.0')}"
+GRAPH = f"https://graph.facebook.com/{os.environ.get('GRAPH_VERSION', 'v27.0')}"
 MEDIA_BASE = os.environ.get(
     "MEDIA_BASE_URL", "https://buntetoene.github.io/paedagogen-wiki/posts"
 ).rstrip("/")
