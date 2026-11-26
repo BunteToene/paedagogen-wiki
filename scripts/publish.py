@@ -40,9 +40,21 @@ class PublishError(Exception):
     pass
 
 
+SECRET_NAMES = ("META_PAGE_TOKEN", "YT_CLIENT_SECRET", "YT_REFRESH_TOKEN")
+
+
+def scrub(text: str) -> str:
+    """Entfernt Schlüssel aus Fehlertexten (z. B. aus URLs), bevor sie im Log oder in post.json landen."""
+    for name in SECRET_NAMES:
+        val = os.environ.get(name)
+        if val:
+            text = text.replace(val, "***")
+    return text
+
+
 def log(msg: str) -> None:
     # Keine Tokens, keine Nutzerdaten ins Log.
-    print(msg, flush=True)
+    print(scrub(msg), flush=True)
 
 
 def env(name: str) -> str:
@@ -144,7 +156,7 @@ def ig_publish(post: dict, post_id: str) -> dict:
                 "message": post["first_comment"], "access_token": token}, timeout=TIMEOUT), "IG Kommentar")
             result["first_comment_id"] = c.get("id")
         except PublishError as e:  # Kommentar ist nett, aber kein Grund zum Abbruch
-            result["first_comment_error"] = str(e)
+            result["first_comment_error"] = scrub(str(e))
     return result
 
 
@@ -231,7 +243,7 @@ def yt_publish(post: dict, post_id: str) -> dict:
                                                   "resourceId": {"kind": "youtube#video", "videoId": data["id"]}}},
                                 timeout=TIMEOUT), "YT Playlist")
         except PublishError as e:
-            result["playlist_error"] = str(e)
+            result["playlist_error"] = scrub(str(e))
     return result
 
 
@@ -301,7 +313,7 @@ def main() -> int:
             except (PublishError, requests.RequestException) as e:
                 failures += 1
                 state = "failed" if attempts >= 3 else "retry"
-                status[platform] = {"state": state, "attempts": attempts, "error": str(e)[:300]}
+                status[platform] = {"state": state, "attempts": attempts, "error": scrub(str(e))[:300]}
                 log(f"  {platform}: FEHLER ({state}) {e}")
         if not DRY:
             pj.write_text(json.dumps(post, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
