@@ -1,0 +1,15 @@
+{
+  "type": "reel",
+  "approved": false,
+  "publish_at": "2026-12-01T18:30:00+00:00",
+  "platforms": ["instagram", "facebook", "youtube"],
+  "video": "video.mp4",
+  "cover": "cover.jpg",
+  "caption": "Text für Instagram und Facebook",
+  "first_comment": "Kurze Umfrage: ...",
+  "youtube": {
+    "title": "Titel #shorts",
+    "tags": ["Kita", "Pädagogik"],
+    "playlist_id": ""
+  }
+}
