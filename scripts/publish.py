@@ -156,19 +156,15 @@ def ig_publish(post: dict, post_id: str) -> dict:
 
 
 def ig_first_comment(media_id: str, message: str) -> dict:
-    """Erster Kommentar. Direkt nach dem Veröffentlichen lehnt Instagram ihn manchmal ab,
-    darum mehrere Versuche mit Pause. Ein Fehler hier bricht den Post nie ab."""
-    token, err = env("META_PAGE_TOKEN"), ""
-    for pause in (10, 30, 60):
-        time.sleep(0 if DRY else pause)
-        try:
-            # Text als URL-Parameter, so wie es die Instagram-Doku zeigt (als Formular kam HTTP 400)
-            c = check(requests.post(f"{GRAPH}/{media_id}/comments", params={
-                "message": message, "access_token": token}, timeout=TIMEOUT), "IG Kommentar")
-            return {"first_comment_id": c.get("id")}
-        except (PublishError, requests.RequestException) as e:
-            err = scrub(str(e))
-    return {"first_comment_error": err}
+    """Erster Kommentar, genau EIN Versuch. Instagram meldet manchmal HTTP 400, legt den
+    Kommentar aber trotzdem an (27.11.: Wiederholungen erzeugten Duplikate). Darum nie wiederholen."""
+    token = env("META_PAGE_TOKEN")
+    try:
+        c = check(requests.post(f"{GRAPH}/{media_id}/comments", params={
+            "message": message, "access_token": token}, timeout=TIMEOUT), "IG Kommentar")
+        return {"first_comment_id": c.get("id")}
+    except (PublishError, requests.RequestException) as e:
+        return {"first_comment_error": scrub(str(e)), "first_comment_note": "evtl. trotzdem gepostet, nicht wiederholen"}
 
 
 # ---------------------------------------------------------------- Facebook
@@ -318,31 +314,12 @@ def wait_for_next_post(max_wait_min: int = 50) -> None:
         time.sleep(secs)
 
 
-def retry_first_comments() -> None:
-    """Holt einen fehlgeschlagenen ersten Instagram-Kommentar nach (höchstens 3 Läufe)."""
-    for pj, post in pending_posts():
-        ig = post.get("status", {}).get("instagram", {})
-        if ig.get("state") != "done" or "first_comment_error" not in ig or not post.get("first_comment"):
-            continue
-        if ig.get("first_comment_tries", 1) >= 3:
-            continue
-        res = ig_first_comment(ig["media_id"], post["first_comment"])
-        ig["first_comment_tries"] = ig.get("first_comment_tries", 1) + 1
-        if "first_comment_id" in res:
-            ig.pop("first_comment_error", None)
-        ig.update(res)
-        log(f"Erster Kommentar {pj.parent.name}: {'ok' if 'first_comment_id' in res else 'noch nicht'}")
-        if not DRY:
-            pj.write_text(json.dumps(post, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-
-
 def main() -> int:
     if os.environ.get("CHECK") == "1":
         return check_connection()
     wait_for_next_post()
     now = dt.datetime.now(dt.timezone.utc)
     failures = 0
-    retry_first_comments()
     for pj in sorted(POSTS.glob("*/post.json")):
         post_id = pj.parent.name
         post = json.loads(pj.read_text(encoding="utf-8"))
