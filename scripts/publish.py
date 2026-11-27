@@ -162,7 +162,8 @@ def ig_first_comment(media_id: str, message: str) -> dict:
     for pause in (10, 30, 60):
         time.sleep(0 if DRY else pause)
         try:
-            c = check(requests.post(f"{GRAPH}/{media_id}/comments", data={
+            # Text als URL-Parameter, so wie es die Instagram-Doku zeigt (als Formular kam HTTP 400)
+            c = check(requests.post(f"{GRAPH}/{media_id}/comments", params={
                 "message": message, "access_token": token}, timeout=TIMEOUT), "IG Kommentar")
             return {"first_comment_id": c.get("id")}
         except (PublishError, requests.RequestException) as e:
