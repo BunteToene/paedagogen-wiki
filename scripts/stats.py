@@ -37,7 +37,7 @@ def main():
     d, e = get(IG, fields="username,followers_count,media_count")
     show("Instagram-Profil", d and {k: d.get(k) for k in ("followers_count", "media_count")}, e)
 
-    d, e = get(f"{IG}/media", fields="id,media_product_type,timestamp,like_count,comments_count,permalink", limit=5)
+    d, e = get(f"{IG}/media", fields="id,media_product_type,timestamp,like_count,comments_count,permalink", limit=25)
     for m in (d or {}).get("data", []):
         print(f"IG {m.get('media_product_type')} {m.get('timestamp')} {m.get('permalink')}: "
               f"Likes {m.get('like_count')}, Kommentare {m.get('comments_count')}")
@@ -51,7 +51,7 @@ def main():
     d, e = get(PAGE, fields="followers_count,fan_count")
     show("Facebook-Seite", d and {k: d.get(k) for k in ("followers_count", "fan_count")}, e)
 
-    d, e = get(f"{PAGE}/video_reels", fields="id,created_time,permalink_url", limit=5)
+    d, e = get(f"{PAGE}/video_reels", fields="id,created_time,permalink_url", limit=25)
     for v in (d or {}).get("data", []):
         print(f"FB Reel {v.get('created_time')} {v.get('permalink_url')}")
         for metric in ("blue_reels_play_count", "fb_reels_total_plays", "post_video_avg_time_watched", "post_video_likes_by_reaction_type"):
