@@ -54,7 +54,7 @@ def main():
     d, e = get(f"{PAGE}/video_reels", fields="id,created_time,permalink_url", limit=5)
     for v in (d or {}).get("data", []):
         print(f"FB Reel {v.get('created_time')} {v.get('permalink_url')}")
-        for metric in ("blue_reels_play_count", "post_impressions_unique", "post_video_likes_by_reaction_type"):
+        for metric in ("blue_reels_play_count", "fb_reels_total_plays", "post_video_avg_time_watched", "post_video_likes_by_reaction_type"):
             i, ie = get(f"{v['id']}/video_insights", metric=metric)
             val = i["data"][0].get("values", [{}])[0].get("value") if i and i.get("data") else None
             print(f"   {metric}: {val if ie is None else 'nicht lesbar (' + ie[:120] + ')'}")
