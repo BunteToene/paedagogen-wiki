@@ -151,13 +151,23 @@ def ig_publish(post: dict, post_id: str) -> dict:
                                    timeout=TIMEOUT), "IG Veröffentlichen")["id"]
     result = {"media_id": media_id}
     if post.get("first_comment"):
+        result.update(ig_first_comment(media_id, post["first_comment"]))
+    return result
+
+
+def ig_first_comment(media_id: str, message: str) -> dict:
+    """Erster Kommentar. Direkt nach dem Veröffentlichen lehnt Instagram ihn manchmal ab,
+    darum mehrere Versuche mit Pause. Ein Fehler hier bricht den Post nie ab."""
+    token, err = env("META_PAGE_TOKEN"), ""
+    for pause in (10, 30, 60):
+        time.sleep(0 if DRY else pause)
         try:
             c = check(requests.post(f"{GRAPH}/{media_id}/comments", data={
-                "message": post["first_comment"], "access_token": token}, timeout=TIMEOUT), "IG Kommentar")
-            result["first_comment_id"] = c.get("id")
-        except PublishError as e:  # Kommentar ist nett, aber kein Grund zum Abbruch
-            result["first_comment_error"] = scrub(str(e))
-    return result
+                "message": message, "access_token": token}, timeout=TIMEOUT), "IG Kommentar")
+            return {"first_comment_id": c.get("id")}
+        except (PublishError, requests.RequestException) as e:
+            err = scrub(str(e))
+    return {"first_comment_error": err}
 
 
 # ---------------------------------------------------------------- Facebook
@@ -283,11 +293,55 @@ def check_connection() -> int:
     return 0 if ok else 1
 
 
+def pending_posts():
+    for pj in sorted(POSTS.glob("*/post.json")):
+        yield pj, json.loads(pj.read_text(encoding="utf-8"))
+
+
+def wait_for_next_post(max_wait_min: int = 50) -> None:
+    """GitHub startet geplante Läufe oft verspätet. Der Lauf kurz vor dem Termin wartet
+    darum bis zur genauen Uhrzeit, damit der Post pünktlich erscheint."""
+    now = dt.datetime.now(dt.timezone.utc)
+    soon = []
+    for _, post in pending_posts():
+        if not post.get("approved"):
+            continue
+        when = dt.datetime.fromisoformat(post["publish_at"])
+        open_ = [p for p in post.get("platforms", PLATFORMS)
+                 if post.get("status", {}).get(p, {}).get("state") not in ("done", "failed")]
+        if open_ and now < when <= now + dt.timedelta(minutes=max_wait_min):
+            soon.append(when)
+    if soon and not DRY:
+        secs = (min(soon) - now).total_seconds() + 5
+        log(f"Nächster Post um {min(soon).isoformat()}, warte {int(secs)} s")
+        time.sleep(secs)
+
+
+def retry_first_comments() -> None:
+    """Holt einen fehlgeschlagenen ersten Instagram-Kommentar nach (höchstens 3 Läufe)."""
+    for pj, post in pending_posts():
+        ig = post.get("status", {}).get("instagram", {})
+        if ig.get("state") != "done" or "first_comment_error" not in ig or not post.get("first_comment"):
+            continue
+        if ig.get("first_comment_tries", 1) >= 3:
+            continue
+        res = ig_first_comment(ig["media_id"], post["first_comment"])
+        ig["first_comment_tries"] = ig.get("first_comment_tries", 1) + 1
+        if "first_comment_id" in res:
+            ig.pop("first_comment_error", None)
+        ig.update(res)
+        log(f"Erster Kommentar {pj.parent.name}: {'ok' if 'first_comment_id' in res else 'noch nicht'}")
+        if not DRY:
+            pj.write_text(json.dumps(post, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
 def main() -> int:
     if os.environ.get("CHECK") == "1":
         return check_connection()
+    wait_for_next_post()
     now = dt.datetime.now(dt.timezone.utc)
     failures = 0
+    retry_first_comments()
     for pj in sorted(POSTS.glob("*/post.json")):
         post_id = pj.parent.name
         post = json.loads(pj.read_text(encoding="utf-8"))
