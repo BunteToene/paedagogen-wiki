@@ -13,7 +13,7 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 
-def make_video(d: pathlib.Path, n: int, first=2.2, mid=3.0, last=2.6, fade=0.3) -> None:
+def make_video(d: pathlib.Path, n: int, first=2.2, mid=3.4, last=2.6, fade=0.3) -> None:
     durs = [first] + [mid] * (n - 2) + [last] if n > 1 else [first]
     args = ["ffmpeg", "-y", "-loglevel", "error"]
     for i, t in enumerate(durs):
