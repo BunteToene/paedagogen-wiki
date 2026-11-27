@@ -1,0 +1,33 @@
+{
+  "type": "carousel",
+  "publish_at": "2026-11-28T18:30:00+00:00",
+  "platforms": ["instagram", "facebook"],
+  "accent": "#00A3C4",
+  "design": {
+    "series": "Musik-Idee",
+    "topic": "Musik & Rhythmus",
+    "title": "Musik machen ohne Instrumente",
+    "badge": "5 Ideen · sofort startklar",
+    "sub": "Für die Gruppe genauso wie fürs Wohnzimmer.",
+    "items": [
+      ["Körper-Orchester", "Klatschen, Patschen auf die Beine, Stampfen, Schnipsen. Ein Kind gibt den Rhythmus vor, alle machen nach.<br><small>Fachwort: Bodypercussion</small>"],
+      ["Das Namens-Echo", "Du klatschst einen Namen in Silben: „Ma-ri-a“. Alle klatschen und sprechen ihn nach. Jedes Kind kommt einmal dran."],
+      ["Laut und leise", "Ein Lied ganz laut singen, dann flüstern, dann nur noch die Lippen bewegen. Kinder lieben den Wechsel und üben dabei genaues Hinhören."],
+      ["Geräusche-Rätsel", "Alle schließen die Augen. Ein Kind macht ein Geräusch: Papier knistern, Tür klopfen, Löffel klirren. Wer errät es?"],
+      ["Das Aufräum-Lied", "Eine eigene kurze Melodie, immer dieselbe, wenn aufgeräumt wird. Nach ein paar Tagen wissen alle: Jetzt geht's los."]
+    ],
+    "cta": "Welche Idee probierst du nächste Woche aus?",
+    "share": "Schick das deinem Team oder an Eltern, die Ideen suchen."
+  },
+  "alts": [
+    "Titelbild: Musik machen ohne Instrumente. 5 Ideen, sofort startklar.",
+    "Idee 1: Körper-Orchester. Klatschen, Patschen, Stampfen, Schnipsen. Ein Kind gibt den Rhythmus vor.",
+    "Idee 2: Das Namens-Echo. Namen in Silben klatschen und nachsprechen.",
+    "Idee 3: Laut und leise. Ein Lied laut, dann flüsternd, dann stumm singen.",
+    "Idee 4: Geräusche-Rätsel. Mit geschlossenen Augen Geräusche erraten.",
+    "Idee 5: Das Aufräum-Lied. Eine eigene kurze Melodie für jedes Aufräumen.",
+    "Abschluss: Welche Idee probierst du nächste Woche aus? Folge dem Pädagogen-Wiki."
+  ],
+  "caption": "Musik in der Kita ohne Instrumente: 5 Ideen für sofort 👇\n\nDu brauchst nur Hände, Füße und Stimmen. Rhythmus, Zuhören und Gemeinschaft gibt's gratis dazu.\n\n💬 Welche Idee probierst du als Erstes aus?\n📌 Speichern für den nächsten Morgenkreis.\n➡️ Schick es deinem Team.\n\nℹ️ Mit KI-Unterstützung erstellt.\n\n#musikinderkita #kita #kitaideen #erzieherin #musikalischefrüherziehung",
+  "first_comment": "Unser Tipp für Anfang: Das Namens-Echo. Kinder hören dabei ganz nebenbei, wie Wörter in Silben klingen. 👏"
+}

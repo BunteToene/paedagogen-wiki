@@ -1,0 +1,33 @@
+{
+  "type": "carousel",
+  "publish_at": "2026-11-29T18:30:00+00:00",
+  "platforms": ["instagram", "facebook"],
+  "accent": "#72B52B",
+  "design": {
+    "series": "Mythos oder Fakt?",
+    "topic": "Sprache",
+    "title": "Zwei Sprachen: zu viel für Kinder?",
+    "badge": "5 Aussagen im Check",
+    "sub": "Was stimmt, was nicht?",
+    "items": [
+      ["Mythos: „Zwei Sprachen verwirren Kinder.“", "Kinder können Sprachen schon sehr früh auseinanderhalten. Mit zwei Sprachen aufzuwachsen ist weltweit ganz normal."],
+      ["Mythos: „Sprachen mischen ist ein Warnsignal.“", "Ein deutsches Wort im türkischen Satz? Das ist normal und zeigt sogar Können: Das Kind nutzt alles, was es weiß."],
+      ["Mythos: „Zu Hause nur Deutsch sprechen!“", "Besser ist die Sprache, die Eltern gut und gern sprechen. Eine starke Familiensprache hilft auch beim Deutschlernen."],
+      ["Meist Mythos: „Sie sprechen später.“", "Die ersten Wörter kommen meist im üblichen Alter. Pro Sprache ist der Wortschatz anfangs oft kleiner, zusammen aber vergleichbar."],
+      ["Fakt: „Vorlesen und Singen helfen.“", "Viel sprechen, vorlesen, singen und zuhören stärkt Sprache, in jeder Sprache."]
+    ],
+    "cta": "Wie viele Sprachen hörst du in deinem Alltag?",
+    "share": "Schick das an Eltern, die sich das fragen."
+  },
+  "alts": [
+    "Titelbild: Mythos oder Fakt? Zwei Sprachen: zu viel für Kinder? 5 Aussagen im Check.",
+    "Mythos: Zwei Sprachen verwirren Kinder. Kinder halten Sprachen früh auseinander.",
+    "Mythos: Sprachen mischen ist ein Warnsignal. Mischen ist normal und zeigt Können.",
+    "Mythos: Zu Hause nur Deutsch sprechen. Besser die Sprache, die Eltern gut und gern sprechen.",
+    "Meist Mythos: Mehrsprachige Kinder sprechen später. Erste Wörter kommen meist im üblichen Alter.",
+    "Fakt: Vorlesen und Singen helfen, in jeder Sprache.",
+    "Abschluss: Wie viele Sprachen hörst du in deinem Alltag? Folge dem Pädagogen-Wiki."
+  ],
+  "caption": "Mehrsprachigkeit bei Kindern: Mythos oder Fakt? 👇\n\nZwei oder mehr Sprachen sind für Kinder keine Überforderung, sondern eine große Chance. Wir räumen mit 4 Mythen auf.\n\nWichtig: Wenn du dir um die Sprachentwicklung Sorgen machst, sprich mit der Kinderarztpraxis.\n\n💬 Welche Sprachen hört man in deiner Kita oder Familie?\n📌 Speichern fürs nächste Elterngespräch.\n➡️ Schick es an Eltern, die sich das fragen.\n\nℹ️ Mit KI-Unterstützung erstellt.\n\n#mehrsprachigkeit #sprachentwicklung #kita #elternsein #zweisprachig",
+  "first_comment": "Bei uns kommt das oft im Elterngespräch: „Sollen wir zu Hause lieber Deutsch sprechen?“ Was antwortet ihr darauf? 👇"
+}
