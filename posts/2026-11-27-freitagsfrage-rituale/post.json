@@ -20,7 +20,7 @@
       "at": "2026-11-27T18:51:26.416751+00:00",
       "media_id": "18082530236412170",
       "first_comment_error": "IG Kommentar: HTTP 400 This API call does not support the requested response format",
-      "first_comment_tries": 2
+      "first_comment_tries": 3
     },
     "facebook": {
       "state": "done",
