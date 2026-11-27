@@ -2,6 +2,9 @@ name: Zahlen abrufen
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - ".github/stats-request"
 
 permissions:
   contents: read
