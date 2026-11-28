@@ -37,5 +37,19 @@
       "file": "slide-07.jpg",
       "alt": "Abschluss: Welche Idee probierst du nächste Woche aus? Folge dem Pädagogen-Wiki."
     }
-  ]
+  ],
+  "status": {
+    "instagram": {
+      "state": "done",
+      "at": "2026-11-28T18:30:05.001778+00:00",
+      "media_id": "18061426199807333",
+      "first_comment_error": "IG Kommentar: HTTP 400 This API call does not support the requested response format",
+      "first_comment_note": "evtl. trotzdem gepostet, nicht wiederholen"
+    },
+    "facebook": {
+      "state": "done",
+      "at": "2026-11-28T18:30:05.001778+00:00",
+      "post_id": "1497201993480110_122095417365571407"
+    }
+  }
 }
