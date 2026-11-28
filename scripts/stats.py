@@ -51,6 +51,12 @@ def main():
     d, e = get(PAGE, fields="followers_count,fan_count")
     show("Facebook-Seite", d and {k: d.get(k) for k in ("followers_count", "fan_count")}, e)
 
+    d, e = get(f"{PAGE}/published_posts", fields="id,created_time,permalink_url,message", limit=25)
+    if e:
+        show("FB Beiträge", None, e)
+    for x in (d or {}).get("data", []):
+        print(f"FB Beitrag {x.get('created_time')} {x.get('permalink_url')} | {(x.get('message') or '')[:50]!r}")
+
     d, e = get(f"{PAGE}/video_reels", fields="id,created_time,permalink_url", limit=25)
     for v in (d or {}).get("data", []):
         print(f"FB Reel {v.get('created_time')} {v.get('permalink_url')}")
