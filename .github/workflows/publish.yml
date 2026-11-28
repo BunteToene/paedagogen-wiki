@@ -4,6 +4,7 @@ on:
   schedule:
     - cron: "*/15 * * * *"   # alle 15 Minuten nach fälligen, freigegebenen Posts schauen
     - cron: "5 17,18 * * *"  # extra Lauf vor 18:30 / 19:30 Berlin, wartet bis zur genauen Uhrzeit
+    - cron: "5 10,11 * * *"  # extra Lauf vor 12:00 Berlin (Mittags-Reel)
   workflow_dispatch:
     inputs:
       dry_run:
