@@ -24,6 +24,8 @@ import pathlib
 import sys
 import time
 
+import subprocess
+
 import requests
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -314,6 +316,34 @@ def wait_for_next_post(max_wait_min: int = 50) -> None:
         time.sleep(secs)
 
 
+def git(*args: str) -> bool:
+    return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True).returncode == 0
+
+
+def claim(pj: pathlib.Path, todo: list) -> bool:
+    """Sperre gegen Doppel-Posts (28.11.: zwei Läufe posteten gleichzeitig).
+    Vor dem Posten wird "posting" committet und gepusht. Gelingt der Push nicht,
+    hat ein anderer Lauf den Post schon übernommen."""
+    if DRY or not os.environ.get("GITHUB_ACTIONS"):
+        return True
+    git("config", "user.name", "paedagogen-wiki-bot")
+    git("config", "user.email", "actions@users.noreply.github.com")
+    if not git("pull", "--rebase", "--autostash", "-q", "origin", "main"):
+        return False
+    post = json.loads(pj.read_text(encoding="utf-8"))
+    status = post.setdefault("status", {})
+    if any(status.get(p, {}).get("state") in ("done", "failed", "posting") for p in todo):
+        return False
+    for p in todo:
+        status[p] = {"state": "posting", "since": dt.datetime.now(dt.timezone.utc).isoformat()}
+    pj.write_text(json.dumps(post, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    if git("commit", "-qam", f"Wird veröffentlicht: {pj.parent.name}") and git("push", "-q", "origin", "HEAD:main"):
+        return True
+    git("fetch", "-q", "origin", "main")
+    git("reset", "-q", "--hard", "origin/main")
+    return False
+
+
 def main() -> int:
     if os.environ.get("CHECK") == "1":
         return check_connection()
@@ -327,9 +357,14 @@ def main() -> int:
             continue
         status = post.setdefault("status", {})
         todo = [p for p in post.get("platforms", PLATFORMS)
-                if status.get(p, {}).get("state") not in ("done", "failed")]
+                if status.get(p, {}).get("state") not in ("done", "failed", "posting")]
         if not todo:
             continue
+        if not claim(pj, todo):
+            log(f"Post {post_id}: wird schon von einem anderen Lauf veröffentlicht, übersprungen")
+            continue
+        post = json.loads(pj.read_text(encoding="utf-8"))
+        status = post["status"]
         log(f"Post {post_id}: {', '.join(todo)}")
         files = [post["video"]] if post["type"] == "reel" else [i["file"] for i in post["images"]]
         try:
